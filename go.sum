@@ -1,0 +1,12 @@
+github.com/jnnkrdb/cordb v1.0.1 h1:RgtGs3tOYHRLu1owaKTxnYy0pEIIPjpmulmDtNQM0Y4=
+github.com/jnnkrdb/cordb v1.0.1/go.mod h1:GNsumiO43SWvW4+bjc2TD9sZWb3qqi831L60geJErhw=
+github.com/jnnkrdb/jlog v1.0.2 h1:o40oW6lSNDOkUkj39Y0nmGDrtbfvHvRGRVnAIl1kJkE=
+github.com/jnnkrdb/jlog v1.0.2/go.mod h1:x0c/czKC7hUnZgGnA+1+VWjD/fUCKaQX7QwmkmpRk7Q=
+github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d h1:VhgPp6v9qf9Agr/56bj7Y/xa04UccTW04VP0Qed4vnQ=
+github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d/go.mod h1:YUTz3bUH2ZwIWBy3CJBeOBEugqcmXREj14T+iG/4k4U=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/toast.v1 v1.0.0-20180812000517-0a84660828b2 h1:MZF6J7CV6s/h0HBkfqebrYfKCVEo5iN+wzE4QhV3Evo=
+gopkg.in/toast.v1 v1.0.0-20180812000517-0a84660828b2/go.mod h1:s1Sn2yZos05Qfs7NKt867Xe18emOmtsO3eAKbDaon0o=
+gopkg.in/yaml.v2 v2.4.0 h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=
+gopkg.in/yaml.v2 v2.4.0/go.mod h1:RDklbk79AGWmwhnvt/jBztapEOGDOx6ZbXqjP6csGnQ=
