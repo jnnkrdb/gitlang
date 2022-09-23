@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/jnnkrdb/corerdb/fnc"
 	"github.com/jnnkrdb/corerdb/prtcl"
 )
 
@@ -55,7 +56,7 @@ func (r Repository) getURL() (url string) {
 
 	if r.AccessToken != "" && r.Username != "" {
 
-		url += r.Username + ":" + r.AccessToken + "@"
+		url += r.Username + ":" + fnc.UnencodeB64(r.AccessToken) + "@"
 	}
 
 	url += r.URI + ""
