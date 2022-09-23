@@ -3,9 +3,9 @@ package gitlabv4
 import (
 	"net/http"
 
-	cordb "github.com/jnnkrdb/cordb/f"
+	"github.com/jnnkrdb/corerdb/fnc"
+	"github.com/jnnkrdb/corerdb/prtcl"
 	"github.com/jnnkrdb/gitlang/f"
-	"github.com/jnnkrdb/jlog"
 )
 
 // struct to describe a file request for the gtlab v4 api
@@ -34,11 +34,11 @@ func (v4 *V4Request) CheckFile(api string, proj Project) {
 
 	if request, err := http.NewRequest("GET", proj.BaseURL(api)+v4.FilePath+"?ref="+v4.File.Branch, nil); err != nil {
 
-		jlog.PrintObject(api, v4, proj, request, err)
+		prtcl.PrintObject(api, v4, proj, request, err)
 
 	} else {
 
-		request.Header.Add("PRIVATE-TOKEN", cordb.UnencodeB64(proj.AccessToken))
+		request.Header.Add("PRIVATE-TOKEN", fnc.UnencodeB64(proj.AccessToken))
 
 		if result, err := http.DefaultClient.Do(request); err == nil {
 
@@ -54,7 +54,7 @@ func (v4 *V4Request) CheckFile(api string, proj Project) {
 
 			default:
 
-				jlog.PrintObject(v4, api, proj, request, result, err)
+				prtcl.PrintObject(v4, api, proj, request, result, err)
 			}
 		}
 	}

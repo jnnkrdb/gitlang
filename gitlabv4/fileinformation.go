@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/jnnkrdb/jlog"
+	"github.com/jnnkrdb/corerdb/prtcl"
 )
 
 // this struct will be parsed into a json-string. the json string can
 // then be push to the gitlab api via a POST or PUT http-request.
 //
 // the encoding will be set to base64 by default. the content itself will be parsed
-// to base64
+// to base64, so dont parse it to base64 before...
 type FileInformation struct {
 	Branch     string `json:"branch"`
 	Encoding   string `json:"encoding"`
@@ -50,7 +50,7 @@ func (fi FileInformation) JSON() (res []byte) {
 
 	if res, err := json.Marshal(fi); err != nil {
 
-		jlog.PrintObject(fi, res, err)
+		prtcl.PrintObject(fi, res, err)
 	}
 
 	return

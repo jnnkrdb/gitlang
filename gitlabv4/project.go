@@ -5,8 +5,8 @@ import (
 	"io"
 	"net/http"
 
-	cordb "github.com/jnnkrdb/cordb/f"
-	"github.com/jnnkrdb/jlog"
+	"github.com/jnnkrdb/corerdb/fnc"
+	"github.com/jnnkrdb/corerdb/prtcl"
 )
 
 /*
@@ -47,11 +47,11 @@ func (p Project) Send(api string, req V4Request) int {
 
 	if request, err := http.NewRequest(req.HTTPMethod, p.BaseURL(api)+req.FilePath, bytes.NewReader(req.File.JSON())); err != nil {
 
-		jlog.PrintObject(api, req, p, request, err)
+		prtcl.PrintObject(api, req, p, request, err)
 
 	} else {
 
-		request.Header.Add("PRIVATE-TOKEN", cordb.UnencodeB64(p.AccessToken))
+		request.Header.Add("PRIVATE-TOKEN", fnc.UnencodeB64(p.AccessToken))
 
 		request.Header.Add("Content-Type", "application/json")
 
@@ -59,13 +59,13 @@ func (p Project) Send(api string, req V4Request) int {
 
 			defer result.Body.Close()
 
-			jlog.PrintObject(io.ReadAll(result.Body))
+			prtcl.PrintObject(io.ReadAll(result.Body))
 
 			return result.StatusCode
 
 		} else {
 
-			jlog.PrintObject(api, req, p, request, result, err)
+			prtcl.PrintObject(api, req, p, request, result, err)
 		}
 	}
 

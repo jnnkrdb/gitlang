@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/jnnkrdb/jlog"
+	"github.com/jnnkrdb/corerdb/prtcl"
 )
 
 // struct for authentication for specific git repositories
@@ -31,18 +31,18 @@ type Repository struct {
 //   - `path` : string > path to the jsonfile, which contains the settings
 func (r *Repository) FromJSON(path string) (err error) {
 
-	jlog.Log.Println("loading gitlab repository-auth configuration from", path)
+	prtcl.Log.Println("loading gitlab repository-auth configuration from", path)
 
 	if jsonf, err := os.ReadFile(path); err == nil {
 
 		if err := json.Unmarshal(jsonf, r); err != nil {
 
-			jlog.PrintObject(jsonf, r, path, err)
+			prtcl.PrintObject(jsonf, r, path, err)
 		}
 
 	} else {
 
-		jlog.PrintObject(jsonf, r, path, err)
+		prtcl.PrintObject(jsonf, r, path, err)
 	}
 
 	return
@@ -66,7 +66,7 @@ func (r Repository) getURL() (url string) {
 // clone function for repositories
 func (r Repository) Clone() (err error) {
 
-	jlog.Log.Println("cloning gitlab repository:", r.Protocol+"://"+r.URI)
+	prtcl.Log.Println("cloning gitlab repository:", r.Protocol+"://"+r.URI)
 
 	var pathcmd string = ""
 
@@ -79,7 +79,7 @@ func (r Repository) Clone() (err error) {
 
 	if err = cmd.Run(); err != nil {
 
-		jlog.PrintObject(r, pathcmd, cmd, err)
+		prtcl.PrintObject(r, pathcmd, cmd, err)
 	}
 
 	return
@@ -87,11 +87,11 @@ func (r Repository) Clone() (err error) {
 
 func (r Repository) Pull() (err error) {
 
-	jlog.Log.Println("pulling gitlab repository:", r.Protocol+"://"+r.URI)
+	prtcl.Log.Println("pulling gitlab repository:", r.Protocol+"://"+r.URI)
 
 	if err = os.Chdir(r.Path); err != nil {
 
-		jlog.PrintObject(r, err)
+		prtcl.PrintObject(r, err)
 
 	} else {
 
@@ -99,7 +99,7 @@ func (r Repository) Pull() (err error) {
 
 		if err = cmd.Run(); err != nil {
 
-			jlog.PrintObject(r, cmd, err)
+			prtcl.PrintObject(r, cmd, err)
 		}
 	}
 
