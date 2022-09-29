@@ -19,9 +19,6 @@ type Project struct {
 // return the url for the specific project
 //
 // looks similar to "https://url.to.gitlab/api/v4/projects/_projectid_/repository/files/"
-//
-// Parameters:
-//   - `apiv4` : string > api url of the v4 version, something like "https://url.to.gitlab/api/v4/"
 func (p Project) BaseURL() string {
 
 	return p.ApiV4 + "/projects/" + p.ID + "/repository/files/"
