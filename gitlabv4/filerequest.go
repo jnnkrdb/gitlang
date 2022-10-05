@@ -78,7 +78,9 @@ func (v4 V4Request) Push(proj Project) error {
 
 			defer result.Body.Close()
 
-			prtcl.PrintObject(io.ReadAll(result.Body))
+			response, err := io.ReadAll(result.Body)
+
+			prtcl.PrintObject(result, response, err)
 
 			return nil
 
