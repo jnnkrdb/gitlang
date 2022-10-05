@@ -80,7 +80,7 @@ func (v4 V4Request) Push(proj Project) error {
 
 			response, err := io.ReadAll(result.Body)
 
-			prtcl.PrintObject(result, response, err)
+			prtcl.PrintObject(result, string(response), err)
 
 			return nil
 
