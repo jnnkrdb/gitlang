@@ -44,14 +44,18 @@ func (fi *FileInformation) check() {
 
 // formats the fileinformation struct into a json-string
 // but the type will be of []byte
-func (fi FileInformation) JSON() (res []byte) {
+func (fi FileInformation) JSON() []byte {
 
 	fi.check()
 
-	if res, err := json.Marshal(fi); err != nil {
+	if res, err := json.Marshal(fi); err == nil {
+
+		return res
+
+	} else {
 
 		prtcl.PrintObject(fi, res, err)
-	}
 
-	return
+		return []byte("fileinformation parsing into json failed")
+	}
 }
