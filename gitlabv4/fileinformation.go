@@ -3,7 +3,6 @@ package gitlabv4
 import (
 	"encoding/base64"
 	"encoding/json"
-	"time"
 
 	"github.com/jnnkrdb/corerdb/prtcl"
 )
@@ -23,7 +22,7 @@ type FileInformation struct {
 }
 
 // check the fileinfo struct for the necessary informations
-func (fi *FileInformation) check() {
+func (fi *FileInformation) validate() {
 
 	if fi.Content != "" {
 
@@ -38,24 +37,22 @@ func (fi *FileInformation) check() {
 
 	if fi.CommitMSG == "" {
 
-		fi.CommitMSG = "api commit, " + time.Now().Format(time.RFC3339)
+		fi.CommitMSG = "api commit, " + prtcl.Timestamp()
 	}
 }
 
 // formats the fileinformation struct into a json-string
 // but the type will be of []byte
-func (fi FileInformation) JSON() []byte {
+func (fi FileInformation) JSON() (jsn []byte) {
 
-	fi.check()
+	fi.validate()
 
-	if res, err := json.Marshal(fi); err == nil {
+	var err error
 
-		return res
+	if jsn, err = json.Marshal(fi); err != nil {
 
-	} else {
-
-		prtcl.PrintObject(fi, res, err)
-
-		return []byte("fileinformation parsing into json failed")
+		prtcl.PrintObject(fi, jsn, err)
 	}
+
+	return
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/jnnkrdb/corerdb/fnc"
 	"github.com/jnnkrdb/corerdb/prtcl"
+	"github.com/jnnkrdb/gitlang/f"
 )
 
 // struct to describe a file request for the gtlab v4 api
@@ -23,7 +24,7 @@ type V4Request struct {
 //   - `proj` : Project > destination project
 func (v4 *V4Request) checkFile(proj Project) string {
 
-	if request, err := http.NewRequest("GET", proj.BaseURL()+v4.FilePath+"?ref="+v4.File.Branch, nil); err != nil {
+	if request, err := http.NewRequest("GET", proj.BaseURL()+f.EncodeURL(v4.FilePath)+"?ref="+v4.File.Branch, nil); err != nil {
 
 		prtcl.PrintObject(v4, proj, request, err)
 
@@ -62,7 +63,7 @@ func (v4 V4Request) Push(proj Project) error {
 
 	req := v4.checkFile(proj)
 
-	if request, err := http.NewRequest(req, proj.BaseURL()+v4.FilePath, bytes.NewReader(v4.File.JSON())); err != nil {
+	if request, err := http.NewRequest(req, proj.BaseURL()+f.EncodeURL(v4.FilePath), bytes.NewReader(v4.File.JSON())); err != nil {
 
 		prtcl.PrintObject(v4, proj, request, err)
 
@@ -100,7 +101,7 @@ func (v4 V4Request) Push(proj Project) error {
 func (v4 V4Request) Get(proj Project) (gr GetResponse, err error) {
 
 	var request *http.Request
-	if request, err = http.NewRequest("GET", proj.BaseURL()+v4.FilePath+"?ref="+v4.File.Branch, nil); err != nil {
+	if request, err = http.NewRequest("GET", proj.BaseURL()+f.EncodeURL(v4.FilePath)+"?ref="+v4.File.Branch, nil); err != nil {
 
 		prtcl.PrintObject(v4, proj, request, gr, err)
 
@@ -141,7 +142,7 @@ func (v4 V4Request) Get(proj Project) (gr GetResponse, err error) {
 func (v4 V4Request) Delete(proj Project) (err error) {
 
 	var request *http.Request
-	if request, err = http.NewRequest("DELETE", proj.BaseURL()+v4.FilePath, bytes.NewReader(v4.File.JSON())); err != nil {
+	if request, err = http.NewRequest("DELETE", proj.BaseURL()+f.EncodeURL(v4.FilePath), bytes.NewReader(v4.File.JSON())); err != nil {
 
 		prtcl.PrintObject(v4, proj, request, err)
 
