@@ -133,3 +133,38 @@ func (v4 V4Request) Get(proj Project) (gr GetResponse, err error) {
 
 	return
 }
+
+// delete a file via delete
+//
+// Parameters:
+//   - `proj` : Project > destination project
+func (v4 V4Request) Delete(proj Project) (err error) {
+
+	var request *http.Request
+	if request, err = http.NewRequest("DELETE", proj.BaseURL()+v4.FilePath, bytes.NewReader(v4.File.JSON())); err != nil {
+
+		prtcl.PrintObject(v4, proj, request, err)
+
+	} else {
+
+		request.Header.Add("PRIVATE-TOKEN", fnc.UnencodeB64(proj.AccessToken))
+
+		request.Header.Add("Content-Type", "application/json")
+
+		if result, err := http.DefaultClient.Do(request); err == nil {
+
+			defer result.Body.Close()
+
+			response, err := io.ReadAll(result.Body)
+
+			prtcl.PrintObject(result, string(response), err)
+
+		} else {
+
+			prtcl.PrintObject(v4, proj, request, result, err)
+
+		}
+	}
+
+	return
+}

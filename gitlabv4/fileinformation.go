@@ -15,11 +15,11 @@ import (
 // to base64, so dont parse it to base64 before...
 type FileInformation struct {
 	Branch     string `json:"branch"`
-	Encoding   string `json:"encoding"`
-	Content    string `json:"content"`
+	Encoding   string `json:"encoding,omitempty"`
+	Content    string `json:"content,omitempty"`
 	CommitMSG  string `json:"commit_message"`
-	AuthorMail string `json:"author_email"`
-	AuthorName string `json:"author_name"`
+	AuthorMail string `json:"author_email,omitempty"`
+	AuthorName string `json:"author_name,omitempty"`
 }
 
 // check the fileinfo struct for the necessary informations
