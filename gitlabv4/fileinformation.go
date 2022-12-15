@@ -1,9 +1,9 @@
 package gitlabv4
 
 import (
-	"encoding/base64"
 	"encoding/json"
 
+	"github.com/jnnkrdb/corerdb/fnc"
 	"github.com/jnnkrdb/corerdb/prtcl"
 )
 
@@ -27,7 +27,7 @@ func (fi *FileInformation) validate() {
 	if fi.Content != "" {
 
 		fi.Encoding = "base64"
-		fi.Content = base64.StdEncoding.EncodeToString([]byte(fi.Content))
+		fi.Content = fnc.EncodeB64(fi.Content)
 	}
 
 	if fi.Branch == "" {

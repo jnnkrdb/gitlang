@@ -100,6 +100,10 @@ func (v4 V4Request) Push(proj Project) error {
 //   - `proj` : Project > destination project
 func (v4 V4Request) Get(proj Project) (gr GetResponse, err error) {
 
+	if v4.File.Branch == "" {
+		v4.File.Branch = "master"
+	}
+
 	var request *http.Request
 	if request, err = http.NewRequest("GET", proj.BaseURL()+f.EncodeURL(v4.FilePath)+"?ref="+v4.File.Branch, nil); err != nil {
 
