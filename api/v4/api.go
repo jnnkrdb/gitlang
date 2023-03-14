@@ -2,6 +2,7 @@ package v4
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -121,6 +122,7 @@ func (v4r v4request) Get(file string) (res v4response, err error) {
 
 // push a file, it will create the file if doesnt exist or update the file if exists
 func (v4r v4request) Push(file string) (*http.Response, error) {
+	v4r.detailedInfo.Content = base64.StdEncoding.EncodeToString([]byte(v4r.detailedInfo.Content))
 	// defining a function to execute the file upload
 	var upload = func(method string) (httpresp *http.Response, err error) {
 		var jsn []byte
