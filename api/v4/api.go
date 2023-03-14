@@ -99,6 +99,12 @@ func (v4r *v4request) Author_Name(name string) *v4request {
 // -------------------------------------------------------------------- actual requests
 
 // get a specific file from gitlab
+//
+// requirements:
+// - AccessToken
+// - ProjectID
+// - Relative Filepath
+// - Branch
 func (v4r v4request) Get(file string) (res v4response, err error) {
 	var httpreq *http.Request
 	if httpreq, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s?ref=%s", v4r.filesurl(), f.EncodeURL(file), v4r.detailedInfo.Branch), nil); err == nil {
