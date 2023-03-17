@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type v4response struct {
+type V4Response struct {
 	FileName        string `json:"file_name"`
 	FilePath        string `json:"file_path"`
 	Size            int    `json:"size"`
@@ -20,7 +20,7 @@ type v4response struct {
 }
 
 // translate the base64 encoded content into unencoded string
-func (v4r v4response) UnencodedContent() (string, error) {
+func (v4r V4Response) UnencodedContent() (string, error) {
 	if b, err := base64.StdEncoding.DecodeString(v4r.Content); err != nil {
 		return "", fmt.Errorf("error unencoding response content: %v", err)
 	} else {

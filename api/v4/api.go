@@ -11,8 +11,6 @@ import (
 	"github.com/jnnkrdb/gitlang/f"
 )
 
-const _notFoundErrorMsg string = "[Code 404] Not Found"
-
 /*
 
 Find ore information about the GitLab API:
@@ -26,9 +24,9 @@ https://docs.gitlab.com/ee/api/personal_access_tokens.html
 type ApiV4 string
 
 // create the base for an gitlab v4 api request with the accesstoken and the project id
-func (v4 ApiV4) Request(projectid int, accesstoken string) *v4request {
+func (v4 ApiV4) Request(projectid int, accesstoken string) *V4Request {
 
-	var req *v4request = &v4request{
+	var req *V4Request = &V4Request{
 		api: v4,
 		pid: projectid,
 		at:  accesstoken,
@@ -40,7 +38,7 @@ func (v4 ApiV4) Request(projectid int, accesstoken string) *v4request {
 }
 
 // structural type to store information about the actual request
-type v4request struct {
+type V4Request struct {
 	api          ApiV4
 	at           string
 	pid          int
@@ -54,44 +52,44 @@ type v4request struct {
 	}
 }
 
-// -------------------------------------------------------------------- helperfunctions for the v4request
+// -------------------------------------------------------------------- helperfunctions for the V4Request
 
 // return the url for the specific project
 //
 // looks similar to "https://url.to.gitlab/api/v4/projects/_projectid_/repository/files/"
-func (v4r v4request) filesurl() string {
+func (v4r V4Request) filesurl() string {
 	return fmt.Sprintf("%s/projects/%d/repository/files/", v4r.api, v4r.pid)
 }
 
 // -------------------------------------------------------------------- external functions to configure the request
 
 // set the branch for the request, if notset, the branch will be master
-func (v4r *v4request) Branch(branch string) *v4request {
+func (v4r *V4Request) Branch(branch string) *V4Request {
 	v4r.detailedInfo.Branch = branch
 	return v4r
 }
 
 // set the content for the request if neccessary, otherwise the content will remain empty
-func (v4r *v4request) Content(content string) *v4request {
+func (v4r *V4Request) Content(content string) *V4Request {
 	v4r.detailedInfo.Content = content
 	return v4r
 }
 
 // set the commitmessage for the request
 // if not set manually, the default is: "commit by github.com/jnnkrdb/gitlang/api/v4 [2006-01-02T15:04:05Z07:00]"
-func (v4r *v4request) Commit_Message(commit string) *v4request {
+func (v4r *V4Request) Commit_Message(commit string) *V4Request {
 	v4r.detailedInfo.Commit_Message = commit
 	return v4r
 }
 
 // set the author mail if required, otherwise the author_mail will remain empty
-func (v4r *v4request) Author_Mail(mail string) *v4request {
+func (v4r *V4Request) Author_Mail(mail string) *V4Request {
 	v4r.detailedInfo.Author_Mail = mail
 	return v4r
 }
 
 // set the author name if required, otherwise the author_name will remain empty
-func (v4r *v4request) Author_Name(name string) *v4request {
+func (v4r *V4Request) Author_Name(name string) *V4Request {
 	v4r.detailedInfo.Author_Name = name
 	return v4r
 }
@@ -105,7 +103,7 @@ func (v4r *v4request) Author_Name(name string) *v4request {
 // - ProjectID
 // - Relative Filepath
 // - Branch
-func (v4r v4request) Get(file string) (res v4response, err error) {
+func (v4r V4Request) Get(file string) (res V4Response, exists bool, err error) {
 	var httpreq *http.Request
 	if httpreq, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s?ref=%s", v4r.filesurl(), f.EncodeURL(file), v4r.detailedInfo.Branch), nil); err == nil {
 		httpreq.Header.Add("PRIVATE-TOKEN", v4r.at)
@@ -115,10 +113,22 @@ func (v4r v4request) Get(file string) (res v4response, err error) {
 			defer httpresp.Body.Close()
 			switch httpresp.StatusCode {
 			case http.StatusOK:
+				exists = true
 				err = json.NewDecoder(httpresp.Body).Decode(&res)
 			case http.StatusNotFound:
-				err = fmt.Errorf(_notFoundErrorMsg)
+				exists = false
+				var b struct {
+					Message string `json:"message"`
+				}
+				if err = json.NewDecoder(httpresp.Body).Decode(&b); err == nil {
+					if b.Message == "404 File Not Found" {
+						err = nil
+					} else {
+						err = fmt.Errorf(b.Message)
+					}
+				}
 			default:
+				exists = false
 				err = fmt.Errorf("[Code %d]could'nt parse response from %s: %v", httpresp.StatusCode, httpresp.Request.URL, httpresp.Body)
 			}
 		}
@@ -127,7 +137,7 @@ func (v4r v4request) Get(file string) (res v4response, err error) {
 }
 
 // push a file, it will create the file if doesnt exist or update the file if exists
-func (v4r v4request) Push(file string) (*http.Response, error) {
+func (v4r V4Request) Push(file string) (*http.Response, error) {
 	v4r.detailedInfo.Content = base64.StdEncoding.EncodeToString([]byte(v4r.detailedInfo.Content))
 	// defining a function to execute the file upload
 	var upload = func(method string) (httpresp *http.Response, err error) {
@@ -143,18 +153,18 @@ func (v4r v4request) Push(file string) (*http.Response, error) {
 		return
 	}
 	// check if the file already exists
-	_, err := v4r.Get(file)
+	_, exists, err := v4r.Get(file)
 	switch {
-	case err == nil:
+	case exists && err == nil:
 		return upload(http.MethodPut)
-	case err.Error() == _notFoundErrorMsg:
+	case !exists && err == nil:
 		return upload(http.MethodPost)
 	}
 	return nil, err
 }
 
 // delete a specific file
-func (v4r v4request) Delete(file string) (*http.Response, error) {
+func (v4r V4Request) Delete(file string) (*http.Response, error) {
 	var (
 		httpreq *http.Request
 		jsn     []byte
