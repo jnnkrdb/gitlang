@@ -138,7 +138,6 @@ func (v4r V4Request) Get(file string) (res V4Response, exists bool, err error) {
 
 // push a file, it will create the file if doesnt exist or update the file if exists
 func (v4r V4Request) Push(file string) (*http.Response, error) {
-	v4r.detailedInfo.Content = base64.StdEncoding.EncodeToString([]byte(v4r.detailedInfo.Content))
 	// defining a function to execute the file upload
 	var upload = func(method string) (httpresp *http.Response, err error) {
 		var jsn []byte
@@ -153,11 +152,21 @@ func (v4r V4Request) Push(file string) (*http.Response, error) {
 		return
 	}
 	// check if the file already exists
-	_, exists, err := v4r.Get(file)
+	v4response, exists, err := v4r.Get(file)
 	switch {
 	case exists && err == nil:
-		return upload(http.MethodPut)
+		if c, e := v4response.UnencodedContent(); e != nil {
+			return nil, e
+		} else {
+			if c != v4r.detailedInfo.Content {
+				v4r.detailedInfo.Content = base64.StdEncoding.EncodeToString([]byte(v4r.detailedInfo.Content))
+				return upload(http.MethodPut)
+			} else {
+				return nil, nil
+			}
+		}
 	case !exists && err == nil:
+		v4r.detailedInfo.Content = base64.StdEncoding.EncodeToString([]byte(v4r.detailedInfo.Content))
 		return upload(http.MethodPost)
 	}
 	return nil, err
