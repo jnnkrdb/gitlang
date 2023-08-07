@@ -1,4 +1,4 @@
-package gitlabv4
+package v4
 
 import (
 	"encoding/json"

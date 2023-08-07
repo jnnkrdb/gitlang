@@ -1,8 +1,8 @@
-package gitlabv4
+package v4
 
 import "github.com/jnnkrdb/corerdb/fnc"
 
-// struct o the json gitlabv4 get request
+// struct o the json v4 get request
 /*
 {
   "file_name": "key.rb",
