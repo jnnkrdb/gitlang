@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/jnnkrdb/gitlang/f"
 )
 
 const BaseApiUrl = "https://api.github.com"
@@ -15,6 +17,7 @@ func NewGithubConnection(username, authtoken string) *apiConn {
 		Headers: map[string]string{
 			"X-GitHub-Api-Version": "2022-11-28",
 			"Authorization":        fmt.Sprintf("Bearer %s", authtoken),
+			"Accept":               "application/vnd.github+json",
 		},
 	}
 }
@@ -35,14 +38,9 @@ func (ac apiConn) newRequest(method string, url string, body io.Reader) (req *ht
 }
 
 func (ac apiConn) CheckFile(repository, relpath string) (err error) {
-
 	var req *http.Request
-
-	if req, err = ac.newRequest(http.MethodGet, fmt.Sprintf("%s/repos/%s/%s/contents/%s", BaseApiUrl, ac.User, repository, relpath), nil); err != nil {
-		return err
+	if req, err = ac.newRequest(http.MethodGet, fmt.Sprintf("%s/repos/%s/%s/contents/%s", BaseApiUrl, ac.User, repository, f.EncodeURL(relpath)), nil); err == nil {
+		fmt.Print(req)
 	}
-
-	fmt.Print(req)
-
-	return nil
+	return
 }

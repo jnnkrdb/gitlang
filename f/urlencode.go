@@ -34,7 +34,7 @@ var _encodings = [][]string{
 	{`|`, `%7C`},
 }
 
-// encode the path to an url for apis like gitlab v4
+// encode the path to an url readable path
 func EncodeURL(path string) string {
 	for index := range _encodings {
 		path = strings.ReplaceAll(path, _encodings[index][0], _encodings[index][1])
